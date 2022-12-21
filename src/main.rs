@@ -53,15 +53,10 @@ fn main() -> ! {
         &mut pac.RESETS,
     );
 
-    let mut onboard_led_pin = pins.led.into_push_pull_output();
-    let mut connected_led_pin = pins.gpio22.into_push_pull_output();
+    let mut connected_led_pin = pins.gpio1.into_push_pull_output();
 
     loop {
-        onboard_led_pin.set_high().unwrap();
-        delay.delay_ms(500);
         connected_led_pin.set_high().unwrap();
-        delay.delay_ms(500);
-        onboard_led_pin.set_low().unwrap();
         delay.delay_ms(500);
         connected_led_pin.set_low().unwrap();
         delay.delay_ms(500);
