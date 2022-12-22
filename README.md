@@ -37,3 +37,24 @@ allows you to use `cargo run` to directly flash the pico if it's in BOOTSEL mode
 
     cargo run [--release]
 
+
+Hardware probe
+--------------
+
+When using [another RP2040 as a hardware probe](https://github.com/rp-rs/rp2040-project-template/blob/main/debug_probes.md)
+install probe-run, and make sure `.cargo/config.toml` uses probe-run as the runner.
+
+    cargo install probe-run
+
+(this doesn't currently work on my setup, investigate)
+
+License
+=======
+
+Copyright 2022 Kuno Woudt <kuno@frob.nl>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of copyleft-next 0.3.1. See
+[copyleft-next-0.3.1.txt](copyleft-next-0.3.1.txt).
+
+SPDX-License-Identifier: copyleft-next-0.3.1
