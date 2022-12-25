@@ -17,6 +17,15 @@ use embedded_hal::digital::v2::OutputPin;
 use panic_probe as _;
 
 use rp_pico as bsp;
+use rp2040_hal as hal;
+
+// Some traits we need
+use core::fmt::Write;
+// use fugit::RateExtU32;
+// use rp2040_hal::clocks::Clock;
+
+// UART related types
+// use hal::uart::{DataBits, StopBits, UartConfig};
 
 use bsp::hal::{
     clocks::{init_clocks_and_plls, Clock},
@@ -58,13 +67,25 @@ fn main() -> ! {
 
     let mut connected_led_pin = pins.gpio3.into_push_pull_output();
 
+    let uart_pins = (
+        // UART TX (characters sent from RP2040) on pin 1 (GPIO0)
+        pins.gpio0.into_mode::<hal::gpio::FunctionUart>(),
+        // UART RX (characters received by RP2040) on pin 2 (GPIO1)
+        pins.gpio1.into_mode::<hal::gpio::FunctionUart>(),
+    );
+
+    let uart_config = bsp::hal::uart::common_configs::_115200_8_N_1;
+    let mut uart = hal::uart::UartPeripheral::new(pac.UART0, uart_pins, &mut pac.RESETS)
+        .enable(uart_config, clocks.peripheral_clock.freq())
+        .unwrap();
+
     loop {
-        debug!("LED on");
+        writeln!(uart, "LED on").unwrap();
         connected_led_pin.set_high().unwrap();
-        delay.delay_ms(1000);
-        debug!("LED off");
+        delay.delay_ms(500);
+        writeln!(uart, "LED off").unwrap();
         connected_led_pin.set_low().unwrap();
-        delay.delay_ms(1000);
+        delay.delay_ms(500);
     }
 }
 

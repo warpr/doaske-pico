@@ -38,15 +38,49 @@ allows you to use `cargo run` to directly flash the pico if it's in BOOTSEL mode
     cargo run [--release]
 
 
-Hardware probe
---------------
+Flash directly from a PI
+------------------------
 
-When using [another RP2040 as a hardware probe](https://github.com/rp-rs/rp2040-project-template/blob/main/debug_probes.md)
-install probe-run, and make sure `.cargo/config.toml` uses probe-run as the runner.
+If we're building on a Raspberry Pi, we can flash directly via the GPIO pins.  This is
+described in more detail in the "Getting started with Raspberry Pi Pico" official
+book? documentation? from Raspberry Pi, Chapter 5: Flash Programming with SWD.
 
-    cargo install probe-run
+Wiring:
 
-(this doesn't currently work on my setup, investigate)
+    Pin 1  (3V3)               ->      3V3       (if powering the pico from the pi)
+    Pin 6  (GND)               ->      GND
+    Pin 8  (GPIO14, UART0 TX)  ->      Pin 2 (GPIO1, UART0 RX)
+    Pin 9  (GPIO15, UART0 RX)  ->      Pin 1 (GPIO0, UART0 TX)
+    Pin 18 (GPIO24)            ->      SWDIO
+    Pin 20 (GND)               ->      SWD GND
+    Pin 22 (GPIO25)            ->      SWDCLK
+
+
+If the Pico has been wired to the Pi, the following command can be used to flash the elf
+binary directly to the Pico.
+
+   bin/gpio-flash
+
+NOTE: this script calls openocd, which was built directly from git, following the instructions in the previously mentioned Chapter 5.
+
+
+Printf debugging
+----------------
+
+If UART has been connected according to the above diagrom, minicom can be used to connect to it
+like this:
+
+    minicom --baudrate 115200 --device /dev/ttyS0
+
+(On some pis the device may be `/dev/ttyAMA0`)
+
+This has been saved to a script at `bin/uart`.
+
+NOTE: minicom does NOT treat a newline as a newline + carriage return by default, but
+this can be enabled by saving the following line in `~/.minirc.dfl`:
+
+    pu addcarreturn    Yes
+
 
 License
 =======

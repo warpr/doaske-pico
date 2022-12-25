@@ -1,0 +1,4 @@
+#!/bin/sh
+
+openocd -f interface/raspberrypi-swd.cfg -f target/rp2040.cfg -c 'program target/thumbv6m-none-eabi/debug/doaske verify reset exit'
+
